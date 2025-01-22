@@ -1,0 +1,72 @@
+/* 全局样式 */
+QWidget {
+    background: linear-gradient(to bottom, #f9f9f9, #e0e0e0);
+}
+
+/* QLabel 样式 */
+QLabel {
+    font-size: 16px;
+    color: #333;
+    margin: 10px;
+    font-weight: bold;
+}
+
+/* QGroupBox 样式 */
+QGroupBox {
+    font-size: 16px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 10px;
+}
+
+QGroupBox:title {
+    subcontrol-origin: margin;
+    subcontrol-position: top center;
+    padding: 0 10px;
+}
+
+/* QPushButton 样式 */
+QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    font-size: 16px;
+    padding: 8px;
+    border-radius: 8px;
+    border: 2px solid #388E3C;
+}
+
+QPushButton:hover {
+    background-color: #45A049;
+}
+
+QPushButton:pressed {
+    background-color: #388E3C;
+}
+
+/* QTextEdit 样式 */
+QTextEdit {
+    background-color: #f9f9f9;
+    font-size: 14px;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+/* QLineEdit 样式 */
+QLineEdit {
+    font-size: 14px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* QComboBox 样式 */
+QComboBox {
+    font-size: 14px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}

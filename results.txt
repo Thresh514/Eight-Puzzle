@@ -1,0 +1,144 @@
+﻿name: JinYu Liu
+email:ljinyu@bu.edu
+
+
+If you worked with a partner, put their contact info below:
+partner's name:Jiayong Tu
+partner's email:jytu@bu.edu
+
+
+
+
+
+
+puzzles with 5-move optimal solutions
+-------------------------------------
+algorithm                num. solved    avg. moves    avg. states tested
+------------------------------------------------------------------------
+Random                       10            6.0               385.6
+BFS                          10            5.0               47.1
+DFS (depth limit 20)         10            16.2              19072.7
+DFS (depth limit 50)         10            48.2              49043.0
+Greedy Search (using h1)     10            5.4               70.4
+A* (using h1)                10            5.0                6.7
+
+
+
+
+puzzles with 10-move optimal solutions
+-------------------------------------
+algorithm                num. solved    avg. moves    avg. states tested
+------------------------------------------------------------------------
+Random                       10            11.8               5037.5
+BFS                          10            10.0               747.7
+DFS (depth limit 20)         10            18.8               24858.0     
+DFS (depth limit 50)         10            49.2               92287.3
+Greedy Search (using h1)     10            77.8               1470.4
+A* (using h1)                10            10.0                30.2
+
+
+
+
+
+
+
+
+puzzles with 15-move optimal solutions
+-------------------------------------
+algorithm                num. solved    avg. moves    avg. states tested
+------------------------------------------------------------------------
+Random                       6             18.3               11913.8
+BFS                          10            15.0               12637.0
+DFS (depth limit 20)         10            17.8               68659.0      
+DFS (depth limit 50)         10            48.6               111406.0
+Greedy Search (using h1)     9             85.6               3558.8           
+A* (using h1)                10            15.0               347.7     
+
+
+
+
+                    
+For  five-step puzzles, A* is more efficient than other algorithms in terms of the average number of moves tested and the average of number of states tested.For the ten-step puzzle, all the algorithms solved all the puzzles, with BFS and A* algorithms being more efficient. DFS with a depth limit of 50 and Greedy searcher have a higher average number of states tested, indicating that they are less efficient. In the 15-step puzzle, the A* algorithm was the most efficient, with the lowest average number of states tested. DFS with a depth limit of 50 is the least efficient when compared to the average number of states tested. Overall, A* is highly efficient and suitable for all these puzzles. DFS is more suitable for the puzzles of low depth limit, and its efficiency will decrease with the increase of depth limit. Random search is inefficient, and the efficiency of BFS and Greedy searcher depends on the complexity of these puzzles.
+
+
+
+
+
+
+
+
+heuristic h2
+------------
+This heuristic works by calculating the number of steps each misplaced tile needs to take from the goal tiles. Then it calculates the sum of the absolute differences of their current coordinates and the coordinates of their goal positions for each tile. It never overestimates the actual number of moves required to place a tile in its correct position since it assumes that each tile can move independently to its destination without any obstructions.
+ 
+
+
+
+
+puzzles with 18-move optimal solutions
+--------------------------------------
+algorithm              num. solved    avg. moves    avg. states tested
+-------------------------- --------------------------------------------
+Greedy (heuristic h1)      7             131.4           7017.3
+Greedy (heuristic h2)      10            76.2            725.7
+# Greedy with any other heuristics
+
+
+A* (heuristic h1)          10            18.0            1861.7
+A* (heuristic h2)          10            18.0            239.3
+# Greedy with any other heuristics
+
+
+
+
+
+
+
+
+puzzles with 21-move optimal solutions
+--------------------------------------
+algorithm              num. solved    avg. moves    avg. states tested
+----------------------------------------------------------------------
+Greedy (heuristic h1)     7               130.4           498.1
+Greedy (heuristic h2)     10              75.4            370.7
+# Greedy with any other heuristics
+
+
+A* (heuristic h1)         10              21.0              7728.5                
+A* (heuristic h2)         10              21.0              482.3
+# Greedy with any other heuristics
+
+
+puzzles with 24-move optimal solutions
+--------------------------------------
+algorithm              num. solved    avg. moves    avg. states tested
+----------------------------------------------------------------------
+Greedy (heuristic h1)    6             114.6             3689.0
+Greedy (heuristic h2)    10            75.2              593.3
+# Greedy with any other heuristics
+ 
+A* (heuristic h1)        1             24.0               27615.0  
+A* (heuristic h2)        10            24.0               1065.5
+# Greedy with any other heuristics
+
+
+
+
+puzzles with 27-move optimal solutions
+--------------------------------------
+algorithm              num. solved    avg. moves    avg. states tested
+----------------------------------------------------------------------
+Greedy (heuristic h1)     10             163.4          2775.8
+Greedy (heuristic h2)     10             90.8           693.9
+# Greedy with any other heuristics
+
+
+A* (heuristic h1)         1              27.0           169577.0            
+A* (heuristic h2)         10             27.0           5043.0
+# Greedy with any other heuristics
+
+
+
+
+In the 18-move puzzles,the Greedy algorithm with h2 solved all puzzles and tested fewer states on average compared to  h1. The A* algorithm solved all puzzles with both heuristics, but h2 was significantly more efficient,  requiring fewer states to be tested.     In the 21-move puzzles,  h2 performs better than h1 for both Greedy and A* in terms of the number of states tested. For 24-move puzzles,  h2 performing better than h1 for both Greedy and A* in terms of the number of states tested. For 27-move puzzles, Both  Greedy and A* algorithms solved all puzzles with h2,  showing fewer moves on average and fewer states tested compared to h1.
+In these results, we can infer that h2 is A more efficient heuristic than h1, it helps greedy searcher and A* algorithm solve more difficult problems, especially as the complexity of the problem increases, in addition h2 causes the average state of the test to decrease significantly, meaning it is more efficient for the dual search process
