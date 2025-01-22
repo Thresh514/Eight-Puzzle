@@ -1,0 +1,3 @@
+([('PuzzleSolverApp',
+   '/Users/wuling/Desktop/project/dist/PuzzleSolverApp',
+   'EXECUTABLE')],)

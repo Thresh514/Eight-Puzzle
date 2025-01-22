@@ -1,9 +1,10 @@
 import sys
 from PyQt5.QtWidgets import (
-    QApplication, QWidget, QVBoxLayout, QHBoxLayout,
+    QApplication, QWidget, QVBoxLayout,
     QPushButton, QTextEdit, QLabel, QLineEdit, QComboBox, QGroupBox
 )
 from PyQt5.QtCore import QThread, pyqtSignal
+from timer import Timer
 
 class PuzzleSolverThread(QThread):
     result_signal = pyqtSignal(str)
@@ -13,15 +14,54 @@ class PuzzleSolverThread(QThread):
         self.board = board
         self.algo = algo
         self.param = param
+        self.timer = Timer("Solver Timer")
+        self.is_running = True  # 控制线程是否运行
+
+
+    def format_board(self, board):
+        """格式化棋盘为 3x3 格式，并将 0 替换为 _"""
+        return '\n'.join([' '.join(row).replace("0", "_") for row in [board[i:i+3] for i in range(0, len(board), 3)]])
+
+    def stop(self):
+        """停止线程运行"""
+        self.is_running = False
 
     def run(self):
-        # 模拟解题结果
         try:
-            # 假设结果生成代码替换此处
-            result = f"Solving board: {self.board} using {self.algo} (param={self.param})\nSolution found!"
-            self.result_signal.emit(result)
+            self.timer.start()
+            self.result_signal.emit(f"Starting to solve:\n{self.format_board(self.board)}\nAlgorithm: {self.algo}\n")
+
+            current_board = list(self.board)
+            goal_state = "123456780"  # 目标状态
+            steps = 0
+
+            while ''.join(current_board) != goal_state:
+                if not self.is_running:  # 检查停止标志
+                    self.result_signal.emit("Solving stopped by user.\n")
+                    break
+                # 模拟棋盘状态变化
+                steps += 1
+                current_board[steps % len(current_board)], current_board[(steps + 1) % len(current_board)] = \
+                    current_board[(steps + 1) % len(current_board)], current_board[steps % len(current_board)]
+
+                formatted_board = self.format_board(current_board)
+                elapsed_time = self.timer.elapsed_time()
+                self.result_signal.emit(
+                    f"Step {steps}:\n{formatted_board}\nTime: {elapsed_time:.2f}s, Steps: {steps}\n"
+                )
+                self.msleep(500)
+
+            # 完成后输出总时间和步数
+            total_time = self.timer.get_diff()
+            self.result_signal.emit(f"Solution found! 🎉\nTotal time: {total_time:.2f}s, Total steps: {steps}\n")
+            self.timer.end()
         except Exception as e:
-            self.result_signal.emit(f"Error: {e}")
+            self.timer.end()  # 确保计时器结束
+            self.result_signal.emit(f"Error: {e}\n")
+
+
+
+
 
 
 class PuzzleSolverApp(QWidget):
@@ -30,7 +70,7 @@ class PuzzleSolverApp(QWidget):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Eight Puzzle Solver")
-        self.setGeometry(200, 200, 500, 750)
+        self.setGeometry(200, 200, 500, 1000)
         self.setup_ui()
 
     def setup_ui(self):
@@ -40,7 +80,7 @@ class PuzzleSolverApp(QWidget):
         # 使用说明
         self.instructions = QLabel(
             "Welcome to the Eight Puzzle Solver!\n"
-            "1. Enter a 9-digit board configuration (e.g., '012345678').\n"
+            "1. Enter a 9-digit board configuration with digits 0-8 (e.g., '012345678').\n"
             "2. Select an algorithm and heuristic (if applicable).\n"
             "3. Click 'Solve Puzzle' to get the solution."
         )
@@ -51,7 +91,7 @@ class PuzzleSolverApp(QWidget):
         input_layout = QVBoxLayout()
 
         # 输入棋盘
-        self.label = QLabel("Enter 8-puzzle board (e.g., '012345678'):")
+        self.label = QLabel("Enter 8-puzzle board with digits 0-8 (e.g., '012345678'):")
         input_layout.addWidget(self.label)
         self.input_board = QLineEdit()
         self.input_board.setPlaceholderText("Enter numbers 0-8 (e.g., 012345678)")
@@ -80,6 +120,13 @@ class PuzzleSolverApp(QWidget):
         
         main_layout.addWidget(self.solve_button)
 
+        # Stop 按钮
+        self.stop_button = QPushButton("Stop")
+        self.stop_button.setEnabled(False)  # 初始状态不可用
+        self.stop_button.clicked.connect(self.stop_puzzle)
+        main_layout.addWidget(self.stop_button)
+
+
         # 输出部分分组
         output_group = QGroupBox("Output")
         output_layout = QVBoxLayout()
@@ -104,22 +151,40 @@ class PuzzleSolverApp(QWidget):
             self.result.setText("Invalid board configuration! Please enter a valid 9-digit string with digits 0-8.")
             return
 
-        # 设置参数
+    # 设置参数
         param = heuristic_choice if algo in ["Greedy", "A*"] else 20
 
-        # 更新状态并禁用按钮
+    # 更新状态并禁用按钮
         self.result.setText(f"Solving {board} using {algo}...")
         self.solve_button.setEnabled(False)
+        self.stop_button.setEnabled(True)  # 启用 Stop 按钮
 
-        # 启动后台线程
+    # 启动后台线程
         self.thread = PuzzleSolverThread(board, algo, param)
         self.thread.result_signal.connect(self.display_result)
+        self.thread.finished.connect(self.on_thread_finished)  # 线程结束后调用
         self.thread.start()
+
 
     def display_result(self, result):
         """显示解题结果，并恢复 UI 状态。"""
-        self.result.setText(result)
+        self.result.append(result)
+        self.result.ensureCursorVisible()
+
+    def stop_puzzle(self):
+        if hasattr(self, 'thread') and self.thread.isRunning():
+            self.thread.stop()  # 调用线程的 stop 方法
+            self.result.append("Solving stopped by user.\n")  # 在输出区域显示停止信息
+            self.result.ensureCursorVisible()
+            self.stop_button.setEnabled(False)
+            self.solve_button.setEnabled(True)  # 恢复 Solve 按钮状态
+    
+    def on_thread_finished(self):
+        """线程结束后恢复按钮状态"""
         self.solve_button.setEnabled(True)
+        self.stop_button.setEnabled(False)
+
+
 
 
 if __name__ == "__main__":
