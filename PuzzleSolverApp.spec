@@ -5,7 +5,7 @@ a = Analysis(
     ['puzzle_solver_app.py'],
     pathex=[],
     binaries=[],
-    datas=[('styles.qss', '.')],
+    datas=[],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
